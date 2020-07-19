@@ -1,7 +1,30 @@
 import boto3
+import sys
+import click
 
 session = boto3.Session(profile_name='shotty')
 ec2 = session.resource('ec2')
 
-for i in ec2.instances.all():
-    print(i)
+@click.command()
+
+def list_instances():
+    """List instances"""
+    for i in ec2.instances.all():
+        print(", ".join((
+            i.id,
+            i.instance_type,
+            i.placement['AvailabilityZone'],
+            i.state['Name'],
+            i.public_dns_name)))
+    return
+
+#nouns and verbs
+# instances snapshots
+# list
+# start / stop
+# tags
+
+
+if __name__ == '__main__':
+    list_instances()
+
