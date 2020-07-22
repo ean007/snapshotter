@@ -17,12 +17,45 @@ def filter_instances(project):
     return instances
 
 
+
+
 @click.group()
+def cli():
+    """shotty manages snapshots"""
+
+@cli.group('volumes')
+def volumes():
+    """Commands for volumes"""
+
+
+@cli.group('instances')
 def instances():
     """Commands for instances"""
 
-@instances.command('list')
+@volumes.command('list')
+@click.option('--project', default=None, help="Only instances for the project (tag Project:<name>)") 
 
+
+def list_volumes(project):
+    """List Volumes"""
+
+    instances = filter_instances(project)
+
+    for i in instances:
+        for v in i.volumes.all():
+            print(f"Volumes: {v}")
+ #       tags={t['Key']: t['Value'] for t in i.tags or []}
+ #       print(", ".join((
+ #           i.id,
+ #           i.instance_type,
+ #           i.placement['AvailabilityZone'],
+ #           i.state['Name'],
+ #           i.public_dns_name,
+ #           tags.get('Project', '<no project>')
+ #           )))
+    return
+
+@instances.command('list')
 @click.option('--project', default=None, help="Only instances for the project (tag Project:<name>)") 
 
 def list_instances(project):
@@ -73,5 +106,5 @@ def start_instances(project):
 
 
 if __name__ == '__main__':
-    instances()
+    cli()
 
